@@ -2,9 +2,10 @@ package com.priyam.antlr;
 import org.antlr.runtime.*;
 import org.antlr.runtime.tree.BaseTree;
 import org.antlr.runtime.tree.CommonTree;
-import com.priyam.antlr.Java7Parser.compilationUnit_return;
-import com.sun.org.apache.xerces.internal.parsers.AbstractSAXParser; 
-public class Test4 {
+import org.antlr.stringtemplate.StringTemplate;
+
+import com.priyam.antlr.Java7Parser.compilationUnit_return; 
+public class Test5 {
 
 	public static void main(String[] args) throws RecognitionException {
 		String inputfirst = "import java.io.*;import java.io.*;"
@@ -76,28 +77,10 @@ LongestCommonSubstring lcsobject =new LongestCommonSubstring();
 String strclone= lcsobject.lcss(str1, str2);
 System.out.println(lcsobject.lcss(str1, str2));
 //System.out.println(tokens.toString());
+CommonTree tree = (CommonTree)jp2.compilationUnit().getTree();
+Test5 gen = new Test5();
 return strclone;
 
-}
-public static String  calculateAST(String x){
-	String str1="NULL";
-	CharStream cs = new ANTLRStringStream(x);
-	Java7Lexer jl = new Java7Lexer(cs);
-	CommonTokenStream tokens = new CommonTokenStream();
-	tokens.setTokenSource(jl);
-	Java7Parser jp = new Java7Parser(tokens);
-	compilationUnit_return compilationUnit;
-	try {
-		compilationUnit = jp.compilationUnit();
-		str1=((BaseTree) compilationUnit.tree).toStringTree();
-	} catch (RecognitionException e) {
-		// TODO Auto-generated catch block
-		e.printStackTrace();
-	}
-	
-		//System.out.println(str1);
-	
-	return str1;
 }
 
 }

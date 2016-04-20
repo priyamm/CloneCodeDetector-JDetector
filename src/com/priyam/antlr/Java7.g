@@ -25,20 +25,20 @@ compilationUnit
         EOF!
     ;
 packageDeclaration 
-    :   'package'! qualifiedName !
-        ';'!
+    :   'package'^ qualifiedName
+        ';'
     ;
 importDeclaration  
-    :   'import'! 
+    :   'import'^ 
         ('static'
         )?
-        IDENTIFIER! '.'! '*'!
+        IDENTIFIER '.'! '*'!
         ';'       
-    |   'import'! 
+    |   'import'^ 
         ('static'
         )?
-        IDENTIFIER!
-        ('.'! IDENTIFIER!
+        IDENTIFIER
+        ('.'! IDENTIFIER
         )+
         ('.'! '*'!
         )?
@@ -86,7 +86,7 @@ classDeclaration
     |   enumDeclaration
     ;
 normalClassDeclaration 
-    :   modifiers  'class'! IDENTIFIER
+    :   modifiers  'class'^ IDENTIFIER
         (typeParameters
         )?
         ('extends' type
@@ -104,7 +104,7 @@ typeParameters
     ;
 typeParameter 
     :   IDENTIFIER
-        ('extends' typeBound
+        ('extends'^ typeBound
         )?
     ;
 typeBound 
@@ -123,13 +123,13 @@ enumDeclaration
     ;
     
 enumBody 
-    :   '{'
+    :   '{'!
         (enumConstants
         )? 
         ','? 
         (enumBodyDeclarations
         )? 
-        '}'
+        '}'!
     ;
 enumConstants 
     :   enumConstant
@@ -209,7 +209,7 @@ methodDeclaration
         formalParameters
         ('throws' qualifiedNameList
         )?
-        '{' !
+        '{'!
         (explicitConstructorInvocation
         )?
         (blockStatement
@@ -244,7 +244,7 @@ variableDeclarator
     :   IDENTIFIER
         ('[' ']'
         )*
-        ('='^ variableInitializer
+        ('='! variableInitializer
         )?
     ;
 /**
@@ -320,7 +320,7 @@ typeArgument
     :   type
     |   '?'
         (
-            ('extends'
+            ('extends'^
             |'super'
             )
             type
@@ -373,7 +373,7 @@ explicitConstructorInvocation
     ;
 qualifiedName 
     :   IDENTIFIER
-        ('.' IDENTIFIER
+        ('.'! IDENTIFIER
         )*
     ;
 annotations 
@@ -407,11 +407,11 @@ elementValue
     |   elementValueArrayInitializer
     ;
 elementValueArrayInitializer 
-    :   '{'
+    :   '{'!
         (elementValue
             (',' elementValue
             )*
-        )? (',')? '}'
+        )? (',')? '}'!
     ;
 /**
  * Annotation declaration.
@@ -423,10 +423,10 @@ annotationTypeDeclaration
         annotationTypeBody
     ;
 annotationTypeBody 
-    :   '{' 
+    :   '{'! 
         (annotationTypeElementDeclaration
         )* 
-        '}'
+        '}'!
     ;
 /**
  * NOTE: here use interfaceFieldDeclaration for field declared inside annotation. they are sytactically the same.
@@ -447,10 +447,10 @@ annotationMethodDeclaration
         ';'
         ;
 block 
-    :   '{'
+    :   '{'!
         (blockStatement
         )*
-        '}'
+        '}'!
     ;
 /*
 staticBlock returns [JCBlock tree]
@@ -483,7 +483,7 @@ blockStatement
     ;
 localVariableDeclarationStatement 
     :   localVariableDeclaration
-        ';'
+        ';'!
     ;
 localVariableDeclaration 
     :   variableModifiers type^
@@ -496,7 +496,7 @@ statement
             
     |   ('assert'
         )
-        expression (':' expression)? ';'!
+        expression (':'! expression)? ';'!
     |   'assert'  expression (':' expression)? ';'            
     |   'if'^ parExpression statement ('else' statement)?          
     |   forstatement
@@ -527,11 +527,11 @@ switchBlockStatementGroup
         )*
     ;
 switchLabel 
-    :   'case'^ expression ':'
-    |   'default' ':'
+    :   'case'^ expression ':'!
+    |   'default'^ ':'!
     ;
 trystatement 
-    :   'try' block
+    :   'try'^ block
         (   catches 'finally' block
         |   catches
         |   'finally' block
@@ -543,7 +543,7 @@ catches
         )*
     ;
 catchClause 
-    :   'catch' '(' formalParameter
+    :   'catch'^ '(' formalParameter
         ')' block 
     ;
 formalParameter 
@@ -554,7 +554,7 @@ formalParameter
 forstatement 
     :   
         // enhanced for loop
-        'for'^ '('! variableModifiers type IDENTIFIER ':'^ 
+        'for'^ '('! variableModifiers type IDENTIFIER ':' 
         expression ')'! statement
             
         // normal for loop
@@ -675,9 +675,9 @@ multiplicativeExpression
     :
         unaryExpression
         (   
-            (   '*'
-            |   '/'
-            |   '%'
+            (   '*'^
+            |   '/'^
+            |   '%'^
             )
             unaryExpression
         )*
@@ -687,15 +687,15 @@ multiplicativeExpression
  *       it's a literal with signed value. INTLTERAL AND LONG LITERAL are added here for this.
  */
 unaryExpression 
-    :   '+'  unaryExpression
-    |   '-' unaryExpression
-    |   '++' unaryExpression
-    |   '--' unaryExpression
+    :   '+'^  unaryExpression
+    |   '-'^ unaryExpression
+    |   '++'^ unaryExpression
+    |   '--'^ unaryExpression
     |   unaryExpressionNotPlusMinus
     ;
 unaryExpressionNotPlusMinus 
-    :   '~' unaryExpression
-    |   '!' unaryExpression
+    :   '~'^ unaryExpression
+    |   '!'^ unaryExpression
     |   castExpression
     |   primary
         (selector
@@ -713,13 +713,13 @@ castExpression
  */
 primary 
     :   parExpression            
-    |   'this'
+    |   'this'^
         ('.' IDENTIFIER
         )*
         (identifierSuffix
         )?
-    |   IDENTIFIER
-        ('.' IDENTIFIER
+    |   IDENTIFIER^
+        ('.'! IDENTIFIER
         )*
         (identifierSuffix
         )?
@@ -736,7 +736,7 @@ primary
     
 superSuffix  
     :   arguments
-    |   '.' (typeArguments
+    |   '.'! (typeArguments
         )?
         IDENTIFIER
         (arguments
@@ -756,7 +756,7 @@ identifierSuffix
     |   innerCreator
     ;
 selector  
-    :   '.' IDENTIFIER
+    :   '.'! IDENTIFIER
         (arguments
         )?
     |   '.' 'this'
