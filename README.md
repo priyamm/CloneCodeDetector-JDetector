@@ -8,7 +8,7 @@
       b) Zest 1.0.0<br/>
       c) Dynamic Language ToolKit(DLKT) -(Core)<br/>
 </p>
-<p>4. Import the project and run the <b>SimpleFileChooser.java</b> file which conatins the main function.</>
+<p>4. Import the project and run the <b>SimpleFileChooser.java</b> file which conatins the main function.</p>
 
 <h3>For better understanding kindly watch the video tutorial for setting up antlr on eclipse- https://vimeo.com/groups/29150/videos/8001326   </h3>
 
